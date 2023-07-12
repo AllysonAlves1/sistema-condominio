@@ -1,15 +1,45 @@
 import { IconCircleArrowDown, IconCircleArrowUp } from "@tabler/icons-react";
 import { IconCircleCheck } from '@tabler/icons-react';
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 interface ResidentesProps {
-  residentes: any[];
+  residentes: [];
 }
 
-export default function CardTable(props: ResidentesProps) {
-  // Adicionar filtros para morador e visitante na tabela
+export default function CardTablePessoas(props: ResidentesProps) {
+
+  // const [data, setData] = useState('');
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get('/pessoa');
+  //       const responseData = response.data;
+  //       setData(responseData);
+  //       console.log(responseData);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+  // const [filtro, setFiltro] = useState(null);
+
+  // const handleFiltro = (opcao) => {
+  //   if (opcao === filtro) {
+  //     setFiltro(null); // Desmarca o filtro se a opção já estiver selecionada
+  //   } else {
+  //     setFiltro(opcao); // Define o filtro selecionado
+  //   }
+  // };
+
+  // const dadosFiltrados = filtro ? data.filter(item => item[opcao]) : data;
+
   return (
     <div className="grid lg:grid-cols-1 p-4 gap-1">
-      <h1 className="text-xl text-black font-semibold">Movimentação</h1>
+      <h1 className="text-xl text-black font-semibold">Pessoas</h1>
       <table className="w-full shadow-lg">
         <thead>
           <tr className="bg-zinc-400">
@@ -50,7 +80,7 @@ export default function CardTable(props: ResidentesProps) {
                 {r.nome}
               </td>
               <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left text-black">
-                {r.nome}
+                {r.descricao}
               </td>
               <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-black">
                 {r.cpf}
@@ -67,7 +97,7 @@ export default function CardTable(props: ResidentesProps) {
                 {r.veiculo}
               </td>
               <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-black">
-                {r.veiculo}
+                {r.placa}
               </td>
               <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-xs p-4 flex justify-around">
                 <button className="bg-green-500 rounded-full" onClick={() => props.selecionar(r)}>

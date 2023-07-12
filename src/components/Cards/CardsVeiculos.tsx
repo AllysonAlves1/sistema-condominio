@@ -1,6 +1,6 @@
 import { IconChevronsDown, IconChevronsUp, IconWalk } from "@tabler/icons-react"
 
-export default function TopCards() {
+export default function CardsVeiculos() {
   
   return (
     <div className="grid lg:grid-cols-3 gap-4 p-6">
