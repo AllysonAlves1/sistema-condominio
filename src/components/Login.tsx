@@ -2,6 +2,9 @@ import { useEffect, useState } from "react"
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Input from "./Input";
+import Button from "./Button";
+import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
@@ -11,48 +14,43 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      // Fazer a requisição para o backend
       const response = await axios.post('/usuario/login', {
         email,
         senha,
       });
-
-      // Obter o token JWT da resposta
       const token = response.data.token;
-
-      // Decodificar o token JWT para obter as informações do usuário
       const decodedToken = jwt.decode(token);
-
-      // Armazenar o token no localStorage
       localStorage.setItem('token', token);
-
-      useEffect(() => {
-        const token = localStorage.getItem('token');
-    
-        if (token) {
-          // O usuário está autenticado, redirecionar para a página protegida
-          router.push('/dashboard');
-        }
-      }, []);
-
+      router.push('/dashboard');
     } catch (error) {
-      // Tratar erros de autenticação
       console.error('Erro ao fazer login:', error);
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      router.push('/dashboard');
+    }
+  }, []);
+
   return (
-    <div className="w-full min-h-screen flex items-center justify-center bg-white">
-      <div className="w-1/2 h-1/2 flex flex-col p-20 justify-between bg-slate-200 rounded-lg shadow-lg">
+    <div className="w-full min-h-screen flex items-center justify-center bg-cyan-50">
+      <div className="w-1/2 h-1/2 flex flex-col p-20 gap-4 justify-between bg-white rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-black">
-          Entre no sistema
+          Login
         </h1>
-        <div className="w-full flex flex-col">
-          <h3 className="text-2xl font-semibold mb-4 text-black">Login</h3>
+        <div className="flex justify-between">
           <p className="text-sm mb-2 text-black">Bem-vindo de volta!</p>
+          <p className="text-sm font-normal text-neutral-500">Não tem conta? <Link href="/register"><span className="text-black font-semibold underline underline-offset-2 cursor-pointer">Cadastre-se</span></Link></p>
         </div>
         <div className="w-full">
-          <p className="text-sm font-normal text-black">Você já tem uma conta? <span className="font-semibold underline underline-offset-2 cursor-pointer">Cadastre-se no sistema</span></p>
+          <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+          <Input type="password" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)}/>
+        </div>
+        <div className="w-full flex flex-col">
+          <Button label="Entrar" onClick={handleLogin}/>
         </div>
       </div>
     </div>

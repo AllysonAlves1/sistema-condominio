@@ -1,7 +1,15 @@
-import { IconHome, IconSettings, IconUserEdit, IconUserPlus } from "@tabler/icons-react";
+import { IconHome, IconLogout, IconSettings, IconUserEdit, IconUserPlus } from "@tabler/icons-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function SideBar(props: any) {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+
+    router.push('/');
+  };
   return (
     <div className="flex">
       <div className="fixed w-56 h-screen p-4 bg-white border-r-[1px] flex flex-col justify-between items-center">
@@ -41,6 +49,15 @@ export default function SideBar(props: any) {
               <span className="text-black">Perfil</span>
             </div>
           </Link>
+
+          <button onChange={handleLogout}>
+            <div className="flex items-center">
+              <div className="bg-blue-300 hover:bg-blue-500 text-white my-4 p-3 rounded-lg inline-block mr-2">
+                <IconLogout size={20} />
+              </div>
+              <span className="text-black">Sair</span>
+            </div>
+          </button>
         </div>
       </div>
       <main className="ml-56 w-full">{props.children}</main>

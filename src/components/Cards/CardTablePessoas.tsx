@@ -25,18 +25,6 @@ export default function CardTablePessoas(props: ResidentesProps) {
   //   fetchData();
   // }, []);
 
-  // const [filtro, setFiltro] = useState(null);
-
-  // const handleFiltro = (opcao) => {
-  //   if (opcao === filtro) {
-  //     setFiltro(null); // Desmarca o filtro se a opção já estiver selecionada
-  //   } else {
-  //     setFiltro(opcao); // Define o filtro selecionado
-  //   }
-  // };
-
-  // const dadosFiltrados = filtro ? data.filter(item => item[opcao]) : data;
-
   return (
     <div className="grid lg:grid-cols-1 p-4 gap-1">
       <h1 className="text-xl text-black font-semibold">Pessoas</h1>
