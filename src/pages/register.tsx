@@ -11,10 +11,7 @@ export default function Register() {
 
   const cadastrarUsuario = async () => {
     try {
-      const instance = axios.create({
-        baseURL: 'http://localhost:3000/usuario/register'
-      });
-      const response = await axios.post(`${instance}`, {
+      const response = await axios.post(`localhost:3000/usuario/register`, {
         nome: nome,
         email: email,
         senha: senha
