@@ -13,8 +13,12 @@ export default function Login() {
   const [senha, setSenha] = useState('');
 
   const handleLogin = async () => {
+    
     try {
-      const response = await axios.post('/usuario/login', {
+      const instance = axios.create({
+        baseURL: 'http://localhost:3000/usuario/login'
+      });
+      const response = await axios.post(`${instance}`, {
         email,
         senha,
       });
