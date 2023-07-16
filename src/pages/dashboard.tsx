@@ -14,7 +14,29 @@ export default function Dashboard() {
       descricao: 'morador',
       telefone: '1111111111',
       veiculo: 'Carro',
-      placa: 'ABC1234'
+      placa: 'ABC1234',
+      acessosPessoa: [
+        {
+          "idAcessoPessoa": 1,
+          "entradaPessoa": "2023-07-15T17:50:17.717Z",
+          "saidaPessoa": null
+        },
+        {
+          "idAcessoPessoa": 2,
+          "entradaPessoa": null,
+          "saidaPessoa": "2023-07-15T18:43:34.172Z"
+        },
+        {
+          "idAcessoPessoa": 3,
+          "entradaPessoa": null,
+          "saidaPessoa": "2023-07-15T19:43:34.172Z"
+        },
+        {
+          "idAcessoPessoa": 4,
+          "entradaPessoa": "2023-07-15T20:50:17.717Z",
+          "saidaPessoa": null
+        },
+      ]
     },
     {
       id: 2,
@@ -53,14 +75,14 @@ export default function Dashboard() {
       placa: 'MNO9876'
     }
   ]
-  
+
   return (
     <Layout>
       <div className='bg-gray-100 min-h-screen'>
         <CardsPessoas />
         <CardsVeiculos />
-        <CardTablePessoas residentes={residentes}/>
-        <CardTableVeiculos residentes={residentes}/>
+        <CardTablePessoas residentes={residentes} />
+        <CardTableVeiculos residentes={residentes} />
       </div>
     </Layout>
   )
