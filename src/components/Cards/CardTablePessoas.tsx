@@ -1,13 +1,70 @@
+import { IconPoint } from "@tabler/icons-react";
 import { IconCircleArrowDown, IconCircleArrowUp } from "@tabler/icons-react";
-import { IconCircleCheck } from '@tabler/icons-react';
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-interface ResidentesProps {
-  residentes: [];
-}
+export default function CardTablePessoas() {
 
-export default function CardTablePessoas(props: ResidentesProps) {
+  const [pessoas, setPessoas] = useState([])
+  const [selecionado, setSelecionado] = useState(false);
+  const [idPessoa, setIdPessoa] = useState<Number>();
+
+  const getPessoas = async () => {
+    await axios.get("http://localhost:3000/pessoa/list")
+      .then((response) => {
+        setPessoas(response.data);
+        console.log(response.data)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    getPessoas();
+  }, []);
+
+  console.log(idPessoa)
+
+  const selecionarEntrada = async () => {
+    await axios.post("http://localhost:3000/acessopessoa/entradapessoa", {
+      pessoaIdPessoa: idPessoa
+    })
+      .then((response) => {
+        console.log(response.data)
+      }).catch((error) => {
+        console.error(error);
+      });
+
+    await axios.put("http://localhost:3000/pessoa/entrada/" + idPessoa)
+      .then((response) => {
+        console.log(response.data)
+      }).catch((error) => {
+        console.error(error);
+      });
+
+    setSelecionado(!selecionado)
+  };
+
+  const selecionarSaida = async () => {
+    await axios.post("http://localhost:3000/acessopessoa/saidapessoa", {
+      pessoaIdPessoa: idPessoa
+    })
+      .then((response) => {
+        console.log(response.data)
+      }).catch((error) => {
+        console.error(error);
+      });
+
+    await axios.put("http://localhost:3000/pessoa/saida/" + idPessoa)
+      .then((response) => {
+        console.log(response.data)
+      }).catch((error) => {
+        console.error(error);
+      });
+
+    setSelecionado(!selecionado)
+  };
 
   return (
     <div className="grid lg:grid-cols-1 p-4 gap-1">
@@ -19,23 +76,27 @@ export default function CardTablePessoas(props: ResidentesProps) {
               className={
                 "px-6 py-3 text-sm uppercase font-semibold text-left"
               }>Nome</th>
-              <th
+            <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
+              }>Telefone</th>
+            <th
+              className={
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Descrição</th>
             <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Apartamento</th>
             <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Status</th>
-              <th
+            <th
               className={
                 "px-6 py-3 text-sm uppercase font-semibold text-left"
               }>Acesso</th>
-              <th
+            <th
               className={
                 "px-6 py-3 text-sm uppercase font-semibold text-left"
               }>Saída</th>
@@ -46,36 +107,54 @@ export default function CardTablePessoas(props: ResidentesProps) {
           </tr>
         </thead>
         <tbody>
-          {props.residentes.map((r: any) => (
-            <tr key={r.nome}>
-              <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-left text-black">
+          {pessoas.map((r: any) => (
+            <tr key={r.idPessoa}>
+              <td id="pessoa-id" className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-left text-black">
                 {r.nome}
+              </td>
+              <td id="pessoa-id" className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-left text-black">
+                {r.telefone}
               </td>
               <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-left text-black">
                 {r.descricao}
               </td>
-              <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black">
-                {r.cpf}
+              <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black">
+                {r.apartamento.bloco} - {r.apartamento.apartamento}
               </td>
               <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4">
-                <div className="flex items-center">
-                  <IconCircleCheck />
-                  <span className="ml-3 text-black">
-                    {r.telefone}
-                  </span>
-                </div>
+                {r.entrada > (r.saida) ?
+                  <div className="flex items-center">
+                    <IconPoint color="green" stroke={8} />
+                    <span className="ml-3 text-black">
+                      Presente
+                    </span>
+                  </div>
+                  :
+                  <div className="flex items-center">
+                    <IconPoint color="red" stroke={8} />
+                    <span className="ml-3 text-black">
+                      Ausente
+                    </span>
+                  </div>
+                }
               </td>
-              <td className="border-t-0 px-2 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black">
-                {r.cpf}
+              <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black truncate">
+                {r.entrada}
               </td>
-              <td className="border-t-0 px-2 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black">
-                {r.cpf}
+              <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black truncate">
+                {r.saida}
               </td>
               <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm p-4 flex justify-around">
-                <button className="bg-green-500 rounded-full">
+                <button className="bg-green-500 rounded-full" onClick={() => {
+                  setIdPessoa(r.idPessoa)
+                  selecionarEntrada()
+                }}>
                   <IconCircleArrowUp />
                 </button>
-                <button className="bg-red-500 rounded-full">
+                <button className="bg-red-500 rounded-full" onClick={() => {
+                  setIdPessoa(r.idPessoa)
+                  selecionarSaida()
+                }}>
                   <IconCircleArrowDown />
                 </button>
               </td>

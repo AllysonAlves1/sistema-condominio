@@ -11,29 +11,33 @@ export default function Login() {
 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [error, setError] = useState('');
 
-  const login = async () => {
-    try {
-      const response = await axios.post('http://localhost:3000/usuario/login', {
-        email,
-        senha,
-      });
-      const token = response.data.token;
-      const decodedToken = jwt.decode(token);
-      localStorage.setItem('token', token);
-      router.push('/dashboard');
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
-    }
+  const login = async (e) => {
+    e.preventDefault();
+    const data = {
+      email: email,
+      senha: senha
+    };
+    await axios.post("http://localhost:3000/usuario/login", data)
+    .then(response => {
+        const token = response.data.token;
+        localStorage.setItem('token', token);
+        router.push('/dashboard');
+      })
+      .catch(error => {
+        console.error("Erro ao fazer login:", error);
+        setError(error.response.data.error);
+      })
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     if (token) {
-      router.push('/dashboard');
+      router.push("/dashboard");
     }
-  }, []);
+  }, [router]);
 
   return (
     <div className="w-full min-h-screen flex items-center justify-center bg-blue-50">
@@ -46,11 +50,11 @@ export default function Login() {
           <p className="text-sm font-normal text-blue-gray-500">Não tem conta? <Link href="/register"><span className="text-black font-semibold underline underline-offset-2 cursor-pointer">Cadastre-se</span></Link></p>
         </div>
         <div className="w-full">
-          <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-          <Input type="password" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)}/>
+          <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input type="password" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)} />
         </div>
         <div className="w-full flex flex-col">
-          <Button label="Entrar" onClick={login}/>
+          <Button label="Entrar" onClick={login} />
         </div>
       </div>
     </div>

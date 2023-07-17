@@ -9,7 +9,7 @@ export default function CardsPessoas() {
   const [visitante, setVisitante] = useState('');
 
   useEffect(() => {
-    axios.get("http://localhost:3000/acessopessoa/countAcessoPessoa").then((response) => {
+    axios.get("http://localhost:3000/acessopessoa/countAcessoEntrada").then((response) => {
       setAcesso(response.data);
     });
   

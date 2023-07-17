@@ -1,13 +1,68 @@
-import { IconCircleArrowDown, IconCircleArrowUp } from "@tabler/icons-react";
+import { IconCircleArrowDown, IconCircleArrowUp, IconPoint } from "@tabler/icons-react";
 import { IconCircleCheck } from '@tabler/icons-react';
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-interface ResidentesProps {
-  residentes: [];
-}
+export default function CardTableVeiculos() {
 
-export default function CardTableVeiculos(props: ResidentesProps) {
+  const [veiculos, setVeiculos] = useState([])
+  const [selecionado, setSelecionado] = useState(false);
+  const [idVeiculo, setIdVeiculo] = useState<Number>();
+
+  const getVeiculos = async () => {
+    await axios.get("http://localhost:3000/veiculo/list")
+      .then((response) => {
+        setVeiculos(response.data);
+        console.log(response.data)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    getVeiculos();
+  }, []);
+
+  const selecionarEntrada = async () => {
+    await axios.post("http://localhost:3000/acessoveiculo/entradaveiculo", {
+      veiculoIdVeiculo: idVeiculo
+    })
+      .then((response) => {
+        console.log(response.data)
+      }).catch((error) => {
+        console.error(error);
+      });
+
+    await axios.put("http://localhost:3000/veiculo/entrada/" + idVeiculo)
+      .then((response) => {
+        console.log(response.data)
+      }).catch((error) => {
+        console.error(error);
+      });
+
+    setSelecionado(!selecionado)
+  };
+
+  const selecionarSaida = async () => {
+    await axios.post("http://localhost:3000/acessoveiculo/saidaveiculo", {
+      veiculoIdVeiculo: idVeiculo
+    })
+      .then((response) => {
+        console.log(response.data)
+      }).catch((error) => {
+        console.error(error);
+      });
+
+    await axios.put("http://localhost:3000/veiculo/saida/" + idVeiculo)
+      .then((response) => {
+        console.log(response.data)
+      }).catch((error) => {
+        console.error(error);
+      });
+
+    setSelecionado(!selecionado)
+  };
 
   return (
     <div className="grid lg:grid-cols-1 p-4 gap-1">
@@ -17,31 +72,35 @@ export default function CardTableVeiculos(props: ResidentesProps) {
           <tr className="bg-blue-gray-500">
             <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Modelo</th>
               <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Marca</th>
             <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Tipo</th>
               <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Placa</th>
+              <th
+              className={
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
+              }>Apartamento</th>
             <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Status</th>
               <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Acesso</th>
               <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Saída</th>
             <th
               className={
@@ -50,39 +109,57 @@ export default function CardTableVeiculos(props: ResidentesProps) {
           </tr>
         </thead>
         <tbody>
-          {props.residentes.map((r: any) => (
-            <tr key={r.nome}>
+          {veiculos.map((r: any) => (
+            <tr key={r.modelo}>
               <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-left text-black">
-                {r.nome}
+                {r.modelo}
               </td>
               <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-left text-black">
-                {r.descricao}
+                {r.marca}
               </td>
               <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black">
-                {r.cpf}
+                {r.tipo}
               </td>
               <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black">
-                {r.cpf}
+                {r.placa}
+              </td>
+              <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black">
+                {r.apartamento.bloco} - {r.apartamento.apartamento}
               </td>
               <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4">
-                <div className="flex items-center">
-                  <IconCircleCheck />
-                  <span className="ml-3 text-black">
-                    {r.telefone}
-                  </span>
-                </div>
+                {r.entrada > (r.saida) ?
+                  <div className="flex items-center">
+                    <IconPoint color="green" stroke={8} />
+                    <span className="ml-3 text-black">
+                      Presente
+                    </span>
+                  </div>
+                  :
+                  <div className="flex items-center">
+                    <IconPoint color="red" stroke={8} />
+                    <span className="ml-3 text-black">
+                      Ausente
+                    </span>
+                  </div>
+                }
               </td>
               <td className="border-t-0 px-2 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black">
-                {r.cpf}
+                {r.entrada}
               </td>
               <td className="border-t-0 px-2 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black">
-                {r.cpf}
+                {r.saida}
               </td>
               <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm p-4 flex justify-around">
-                <button className="bg-green-500 rounded-full" >
+                <button className="bg-green-500 rounded-full" onClick={() => {
+                  setIdVeiculo(r.idVeiculo)
+                  selecionarEntrada()
+                }}>
                   <IconCircleArrowUp />
                 </button>
-                <button className="bg-red-500 rounded-full" >
+                <button className="bg-red-500 rounded-full" onClick={() => {
+                  setIdVeiculo(r.idVeiculo)
+                  selecionarSaida()
+                }}>
                   <IconCircleArrowDown />
                 </button>
               </td>
