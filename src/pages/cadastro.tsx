@@ -50,6 +50,7 @@ export default function Cadastro() {
     await axios.post("http://localhost:3000/pessoa/registrar", pessoa)
       .then((response) => {
         console.log("Pessoa cadastrada:", response.data);
+        router.push('/dashboard')
       })
       .catch((error) => {
         console.error("Erro ao cadastrar Pessoa:", error);
@@ -68,6 +69,7 @@ export default function Cadastro() {
     await axios.post("http://localhost:3000/veiculo/registrar", veiculo)
       .then((response) => {
         console.log("Veiculo cadastrado:", response.data);
+        router.push('/dashboard')
       })
       .catch((error) => {
         console.error("Erro ao cadastrar Veiculo:", error);

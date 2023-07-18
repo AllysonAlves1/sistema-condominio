@@ -1,4 +1,4 @@
-import { IconHome, IconLogout, IconSettings, IconUserEdit, IconUserPlus } from "@tabler/icons-react";
+import { IconHome, IconLogout, IconSettings, IconUserPlus } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -32,15 +32,6 @@ export default function SideBar(props: any) {
             </div>
           </Link>
 
-          <Link href='/editar'>
-            <div className="flex items-center">
-              <div className="bg-blue-300 hover:bg-blue-500 text-white my-4 p-3 rounded-lg inline-block mr-2">
-                <IconUserEdit size={20} />
-              </div>
-              <span className="text-black">Editar</span>
-            </div>
-          </Link>
-
           <Link href='/perfil'>
             <div className="flex items-center">
               <div className="bg-blue-300 hover:bg-blue-500 text-white my-4 p-3 rounded-lg inline-block mr-2">
@@ -50,7 +41,7 @@ export default function SideBar(props: any) {
             </div>
           </Link>
 
-          <button onChange={handleLogout}>
+          <button onClick={handleLogout}>
             <div className="flex items-center">
               <div className="bg-blue-300 hover:bg-blue-500 text-white my-4 p-3 rounded-lg inline-block mr-2">
                 <IconLogout size={20} />

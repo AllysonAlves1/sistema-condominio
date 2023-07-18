@@ -1,6 +1,7 @@
-import { IconCircleArrowDown, IconCircleArrowUp, IconPoint } from "@tabler/icons-react";
-import { IconCircleCheck } from '@tabler/icons-react';
+import { IconCircleArrowDown, IconCircleArrowUp, IconEdit, IconPoint, IconTrash } from "@tabler/icons-react";
 import axios from "axios";
+import { format } from "date-fns";
+import { Router, useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function CardTableVeiculos() {
@@ -8,6 +9,7 @@ export default function CardTableVeiculos() {
   const [veiculos, setVeiculos] = useState([])
   const [selecionado, setSelecionado] = useState(false);
   const [idVeiculo, setIdVeiculo] = useState<Number>();
+  const router = useRouter()
 
   const getVeiculos = async () => {
     await axios.get("http://localhost:3000/veiculo/list")
@@ -23,6 +25,11 @@ export default function CardTableVeiculos() {
   useEffect(() => {
     getVeiculos();
   }, []);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, 'dd/MM/yyyy HH:mm:ss');
+  };
 
   const selecionarEntrada = async () => {
     await axios.post("http://localhost:3000/acessoveiculo/entradaveiculo", {
@@ -62,6 +69,20 @@ export default function CardTableVeiculos() {
       });
 
     setSelecionado(!selecionado)
+  };
+
+  const editarVeiculo = () => {
+    router.push('/editar')
+  };
+  
+  const deletarVeiculo = async () => {
+    await axios.delete("http://localhost:3000/veiculo/" + idVeiculo)
+      .then((response) => {
+        console.log(response.data)
+      }).catch((error) => {
+        console.error(error);
+      });
+      window.location.reload();
   };
 
   return (
@@ -104,13 +125,17 @@ export default function CardTableVeiculos() {
               }>Saída</th>
             <th
               className={
+                "px-4 py-3 text-sm uppercase font-semibold bg-orange-500"
+              }>Acessos</th>
+              <th
+              className={
                 "px-4 py-3 text-sm uppercase font-semibold bg-blue-500"
               }>Ações</th>
           </tr>
         </thead>
         <tbody>
           {veiculos.map((r: any) => (
-            <tr key={r.modelo}>
+            <tr key={r.idVeiculo}>
               <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-left text-black">
                 {r.modelo}
               </td>
@@ -143,14 +168,14 @@ export default function CardTableVeiculos() {
                   </div>
                 }
               </td>
-              <td className="border-t-0 px-2 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black">
-                {r.entrada}
+              <td className="border-t-0 px-2 align-middle border-l-0 border-r-0 text-sm p-4 text-black">
+                {formatDate(r.entrada)}
               </td>
-              <td className="border-t-0 px-2 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black">
-                {r.saida}
+              <td className="border-t-0 px-2 align-middle border-l-0 border-r-0 text-sm p-4 text-black">
+                {formatDate(r.saida)}
               </td>
-              <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm p-4 flex justify-around">
-                <button className="bg-green-500 rounded-full" onClick={() => {
+              <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm p-4 text-center">
+                <button className="bg-green-500 rounded-full mr-1" onClick={() => {
                   setIdVeiculo(r.idVeiculo)
                   selecionarEntrada()
                 }}>
@@ -161,6 +186,19 @@ export default function CardTableVeiculos() {
                   selecionarSaida()
                 }}>
                   <IconCircleArrowDown />
+                </button>
+              </td>
+              <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm p-4 text-center">
+                <button className="bg-green-500 rounded-full mr-1" onClick={() => {
+                  editarVeiculo()
+                }}>
+                  <IconEdit />
+                </button>
+                <button className="bg-red-500 rounded-full" onClick={() => {
+                  setIdVeiculo(r.idVeiculo)
+                  deletarVeiculo()
+                }}>
+                  <IconTrash />
                 </button>
               </td>
             </tr>

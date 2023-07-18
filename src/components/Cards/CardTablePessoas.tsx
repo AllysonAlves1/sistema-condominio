@@ -1,12 +1,12 @@
-import { IconPoint } from "@tabler/icons-react";
+import { IconEdit, IconPoint, IconTrash } from "@tabler/icons-react";
 import { IconCircleArrowDown, IconCircleArrowUp } from "@tabler/icons-react";
 import axios from "axios";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 
 export default function CardTablePessoas() {
 
   const [pessoas, setPessoas] = useState([])
-  const [selecionado, setSelecionado] = useState(false);
   const [idPessoa, setIdPessoa] = useState<Number>();
 
   const getPessoas = async () => {
@@ -24,9 +24,14 @@ export default function CardTablePessoas() {
     getPessoas();
   }, []);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, 'dd/MM/yyyy HH:mm:ss');
+  };
+
   console.log(idPessoa)
 
-  const selecionarEntrada = async () => {
+  const cadastrarEntrada = async () => {
     await axios.post("http://localhost:3000/acessopessoa/entradapessoa", {
       pessoaIdPessoa: idPessoa
     })
@@ -35,18 +40,18 @@ export default function CardTablePessoas() {
       }).catch((error) => {
         console.error(error);
       });
+  };
 
+  const selecionarEntrada = async () => {
     await axios.put("http://localhost:3000/pessoa/entrada/" + idPessoa)
       .then((response) => {
         console.log(response.data)
       }).catch((error) => {
         console.error(error);
       });
-
-    setSelecionado(!selecionado)
   };
 
-  const selecionarSaida = async () => {
+  const cadastrarSaida = async () => {
     await axios.post("http://localhost:3000/acessopessoa/saidapessoa", {
       pessoaIdPessoa: idPessoa
     })
@@ -55,17 +60,37 @@ export default function CardTablePessoas() {
       }).catch((error) => {
         console.error(error);
       });
+  };
 
+  const selecionarSaida = async () => {
     await axios.put("http://localhost:3000/pessoa/saida/" + idPessoa)
       .then((response) => {
         console.log(response.data)
       }).catch((error) => {
         console.error(error);
       });
-
-    setSelecionado(!selecionado)
   };
-
+  
+  
+  const editarPessoa = async () => {
+    await axios.put("http://localhost:3000/pessoa/saida/" + idPessoa)
+    .then((response) => {
+      console.log(response.data)
+    }).catch((error) => {
+      console.error(error);
+    });
+  };
+  
+  const deletarPessoa = async () => {
+    await axios.delete("http://localhost:3000/pessoa/" + idPessoa)
+      .then((response) => {
+        console.log(response.data)
+      }).catch((error) => {
+        console.error(error);
+      });
+      window.location.reload();
+  };
+  
   return (
     <div className="grid lg:grid-cols-1 p-4 gap-1">
       <h1 className="text-xl text-black font-semibold">Pessoas</h1>
@@ -94,13 +119,17 @@ export default function CardTablePessoas() {
               }>Status</th>
             <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Acesso</th>
             <th
               className={
-                "px-6 py-3 text-sm uppercase font-semibold text-left"
+                "px-4 py-3 text-sm uppercase font-semibold text-left"
               }>Saída</th>
             <th
+              className={
+                "px-4 py-3 text-sm uppercase font-semibold bg-orange-500"
+              }>Acessos</th>
+              <th
               className={
                 "px-4 py-3 text-sm uppercase font-semibold bg-blue-500"
               }>Ações</th>
@@ -112,7 +141,7 @@ export default function CardTablePessoas() {
               <td id="pessoa-id" className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-left text-black">
                 {r.nome}
               </td>
-              <td id="pessoa-id" className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-left text-black">
+              <td id="pessoa-id" className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-left text-black">
                 {r.telefone}
               </td>
               <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-left text-black">
@@ -138,24 +167,40 @@ export default function CardTablePessoas() {
                   </div>
                 }
               </td>
-              <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black truncate">
-                {r.entrada}
+              <td className="border-t-0 px-2 align-middle border-l-0 border-r-0 text-sm p-4 text-black">
+                {formatDate(r.entrada)}
               </td>
-              <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4 text-black truncate">
-                {r.saida}
+              <td className="border-t-0 px-2 align-middle border-l-0 border-r-0 text-sm p-4 text-black">
+                {formatDate(r.saida)}
               </td>
-              <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm p-4 flex justify-around">
-                <button className="bg-green-500 rounded-full" onClick={() => {
+              <td className="border-t-0 px-3 align-middle border-l-0 border-r-0 text-sm p-4 text-center">
+                <button className="bg-green-500 rounded-full mr-1" onClick={() => {
                   setIdPessoa(r.idPessoa)
                   selecionarEntrada()
+                  cadastrarEntrada()
                 }}>
                   <IconCircleArrowUp />
                 </button>
                 <button className="bg-red-500 rounded-full" onClick={() => {
                   setIdPessoa(r.idPessoa)
                   selecionarSaida()
+                  cadastrarSaida()
                 }}>
                   <IconCircleArrowDown />
+                </button>
+              </td>
+              <td className="border-t-0 px-3 align-middle border-l-0 border-r-0 text-sm p-4 text-center">
+                <button className="bg-green-500 rounded-full mr-1" onClick={() => {
+                  setIdPessoa(r.idPessoa)
+                  editarPessoa()
+                }}>
+                  <IconEdit />
+                </button>
+                <button className="bg-red-500 rounded-full" onClick={() => {
+                  setIdPessoa(r.idPessoa)
+                  deletarPessoa()
+                }}>
+                  <IconTrash />
                 </button>
               </td>
             </tr>

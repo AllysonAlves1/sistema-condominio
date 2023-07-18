@@ -3,7 +3,13 @@ import InputCheck from "@/components/InputCheck";
 import Layout from "@/components/Layout";
 import { Option, Select } from "@material-tailwind/react";
 
-export default function EditarResidente() {
+interface EditarPessoaProps {
+  pessoa: any[]
+  idPessoa: number
+}
+
+export default function EditarResidente(props: EditarPessoaProps) {
+
   return (
     <Layout>
       <div className="w-full min-h-screen flex items-center justify-center bg-blue-50">
