@@ -59,6 +59,7 @@ export default function CardTablePessoas() {
     await axios.put("http://localhost:3000/pessoa/entrada/" + idPessoa)
       .then((response) => {
         console.log(response.data)
+        window.location.reload();
       }).catch((error) => {
         console.error(error);
       });
@@ -78,6 +79,7 @@ export default function CardTablePessoas() {
     await axios.put("http://localhost:3000/pessoa/saida/" + idPessoa)
       .then((response) => {
         console.log(response.data)
+        window.location.reload();
       }).catch((error) => {
         console.error(error);
       });

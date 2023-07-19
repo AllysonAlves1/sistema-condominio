@@ -9,17 +9,20 @@ export default function Perfil() {
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('');
-  const [decodedJwt, setDecodedJwt] = useState<JwtPayload | null>(null);
+  // const [decodedJwt, setDecodedJwt] = useState<JwtPayload | null>(null);
+  const [id, setId] = useState('');
 
   useEffect(() => {
     // Obter o token armazenado no localStorage
-    const token = localStorage.getItem("user");
+    const token = localStorage.getItem("id");
 
     // Decodificar o token e atualizar o estado com os dados decodificados
     if (token) {
       try {
-        const decoded = jwt.decode(token);
-        console.log(decoded)
+        // const decoded = jwt.decode(token);
+        // setDecodedJwt(token);
+        setId(token)
+        console.log(token)
       } catch (error) {
         console.error('Erro ao decodificar o token:', error);
       }
@@ -27,7 +30,7 @@ export default function Perfil() {
   }, []);
 
   const editarUsuario = async () => {
-    await axios.put("http://localhost:3000/usuario/" + decodedJwt?.idUsuario, {
+    await axios.put("http://localhost:3000/usuario/" + id, {
       nome,
       email,
       senha,

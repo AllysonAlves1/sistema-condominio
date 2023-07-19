@@ -6,7 +6,8 @@ export default function SideBar(props: any) {
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
+    localStorage.removeItem('acess_token');
+    localStorage.removeItem('id');
 
     router.push('/');
   };

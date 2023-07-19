@@ -20,7 +20,8 @@ export default function Login() {
     };
     await axios.post("http://localhost:3000/usuario/login", data)
     .then(response => {
-        localStorage.setItem('user', JSON.stringify(response.data));
+        localStorage.setItem('id', JSON.stringify(response.data.id))
+        localStorage.setItem('acess_token', JSON.stringify(response.data.access_token))
         router.push('/dashboard');
       })
       .catch(error => {
@@ -30,7 +31,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("user");
+    const token = localStorage.getItem("acess_token");
 
     if (token) {
       router.push("/dashboard");
