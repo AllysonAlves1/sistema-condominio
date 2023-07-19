@@ -37,7 +37,7 @@ export default function Cadastro() {
     getApartamento();
   }, []);
 
-  const cadastrarPessoa = async (event) => {
+  const cadastrarPessoa = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     const pessoa = {
       nome,
@@ -57,7 +57,7 @@ export default function Cadastro() {
       });
   };
 
-  const cadastrarVeiculo = async (event) => {
+  const cadastrarVeiculo = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     const veiculo = {
       tipo,

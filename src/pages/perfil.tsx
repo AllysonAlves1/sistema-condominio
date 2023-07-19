@@ -9,7 +9,7 @@ export default function Perfil() {
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('');
-  const [decodedJwt, setDecodedJwt] = useState<String | null>('');
+  const [decodedJwt, setDecodedJwt] = useState<JwtPayload | null>(null);
 
   useEffect(() => {
     // Obter o token armazenado no localStorage
@@ -19,8 +19,7 @@ export default function Perfil() {
     if (token) {
       try {
         const decoded = jwt.decode(token);
-        setDecodedJwt(decoded);
-        console.log(decodedJwt?.idUsuario)
+        console.log(decoded)
       } catch (error) {
         console.error('Erro ao decodificar o token:', error);
       }

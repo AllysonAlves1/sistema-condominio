@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import jwt from "jsonwebtoken";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Input from "./Input";
@@ -13,7 +12,7 @@ export default function Login() {
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
 
-  const login = async (e) => {
+  const login = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     const data = {
       email: email,

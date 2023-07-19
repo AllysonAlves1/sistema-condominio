@@ -11,7 +11,7 @@ export default function Register() {
   const [senha, setSenha] = useState('');
   const router = useRouter();
 
-  const register = async (event) => {
+  const register = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     const data = {
       nome,
