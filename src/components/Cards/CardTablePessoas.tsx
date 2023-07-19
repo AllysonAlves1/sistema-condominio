@@ -39,7 +39,7 @@ export default function CardTablePessoas() {
     getPessoas();
   }, []);
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return format(date, 'dd/MM/yyyy HH:mm:ss');
   };
