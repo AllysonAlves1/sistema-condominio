@@ -21,8 +21,7 @@ export default function Login() {
     };
     await axios.post("http://localhost:3000/usuario/login", data)
     .then(response => {
-        const token = response.data.token;
-        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(response.data));
         router.push('/dashboard');
       })
       .catch(error => {
@@ -32,7 +31,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("user");
 
     if (token) {
       router.push("/dashboard");

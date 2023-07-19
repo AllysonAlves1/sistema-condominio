@@ -3,11 +3,26 @@ import { IconCircleArrowDown, IconCircleArrowUp } from "@tabler/icons-react";
 import axios from "axios";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
+import {
+  Button,
+  Dialog,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Typography,
+  Input,
+} from "@material-tailwind/react";
+import React from "react";
 
 export default function CardTablePessoas() {
 
   const [pessoas, setPessoas] = useState([])
-  const [idPessoa, setIdPessoa] = useState<Number>();
+  const [userId, setIdPessoa] = useState('');
+  const [open, setOpen] = useState(false);
+  const [nome, setNome] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [telefone, setTelefone] = useState('');
 
   const getPessoas = async () => {
     await axios.get("http://localhost:3000/pessoa/list")
@@ -29,9 +44,9 @@ export default function CardTablePessoas() {
     return format(date, 'dd/MM/yyyy HH:mm:ss');
   };
 
-  console.log(idPessoa)
 
-  const cadastrarEntrada = async () => {
+  const cadastrarEntrada = async (id: number) => {
+    const idPessoa = id
     await axios.post("http://localhost:3000/acessopessoa/entradapessoa", {
       pessoaIdPessoa: idPessoa
     })
@@ -40,9 +55,7 @@ export default function CardTablePessoas() {
       }).catch((error) => {
         console.error(error);
       });
-  };
 
-  const selecionarEntrada = async () => {
     await axios.put("http://localhost:3000/pessoa/entrada/" + idPessoa)
       .then((response) => {
         console.log(response.data)
@@ -51,7 +64,8 @@ export default function CardTablePessoas() {
       });
   };
 
-  const cadastrarSaida = async () => {
+  const cadastrarSaida = async (id: number) => {
+    const idPessoa = id
     await axios.post("http://localhost:3000/acessopessoa/saidapessoa", {
       pessoaIdPessoa: idPessoa
     })
@@ -60,9 +74,7 @@ export default function CardTablePessoas() {
       }).catch((error) => {
         console.error(error);
       });
-  };
 
-  const selecionarSaida = async () => {
     await axios.put("http://localhost:3000/pessoa/saida/" + idPessoa)
       .then((response) => {
         console.log(response.data)
@@ -70,27 +82,36 @@ export default function CardTablePessoas() {
         console.error(error);
       });
   };
-  
-  
+
   const editarPessoa = async () => {
-    await axios.put("http://localhost:3000/pessoa/saida/" + idPessoa)
-    .then((response) => {
+    await axios.put("http://localhost:3000/pessoa/" + userId, {
+      nome,
+      cpf,
+      telefone,
+    }).then((response) => {
       console.log(response.data)
+      window.location.reload();
     }).catch((error) => {
       console.error(error);
     });
   };
-  
-  const deletarPessoa = async () => {
+
+  const deletarPessoa = async (id: number) => {
+    const idPessoa = id
     await axios.delete("http://localhost:3000/pessoa/" + idPessoa)
       .then((response) => {
         console.log(response.data)
       }).catch((error) => {
         console.error(error);
       });
-      window.location.reload();
+    window.location.reload();
   };
-  
+
+  function ModalEditar(id: string) {
+    setOpen((cur) => !cur);
+    setIdPessoa(id)
+  };
+
   return (
     <div className="grid lg:grid-cols-1 p-4 gap-1">
       <h1 className="text-xl text-black font-semibold">Pessoas</h1>
@@ -129,7 +150,7 @@ export default function CardTablePessoas() {
               className={
                 "px-4 py-3 text-sm uppercase font-semibold bg-orange-500"
               }>Acessos</th>
-              <th
+            <th
               className={
                 "px-4 py-3 text-sm uppercase font-semibold bg-blue-500"
               }>Ações</th>
@@ -151,18 +172,18 @@ export default function CardTablePessoas() {
                 {r.apartamento.bloco} - {r.apartamento.apartamento}
               </td>
               <td className="border-t-0 px-4 align-middle border-l-0 border-r-0 text-sm whitespace-nowrap p-4">
-                {r.entrada > (r.saida) ?
-                  <div className="flex items-center">
-                    <IconPoint color="green" stroke={8} />
-                    <span className="ml-3 text-black">
-                      Presente
-                    </span>
-                  </div>
-                  :
+                {(r.saida) > r.entrada ?
                   <div className="flex items-center">
                     <IconPoint color="red" stroke={8} />
                     <span className="ml-3 text-black">
                       Ausente
+                    </span>
+                  </div>
+                  :
+                  <div className="flex items-center">
+                    <IconPoint color="green" stroke={8} />
+                    <span className="ml-3 text-black">
+                      Presente
                     </span>
                   </div>
                 }
@@ -175,30 +196,24 @@ export default function CardTablePessoas() {
               </td>
               <td className="border-t-0 px-3 align-middle border-l-0 border-r-0 text-sm p-4 text-center">
                 <button className="bg-green-500 rounded-full mr-1" onClick={() => {
-                  setIdPessoa(r.idPessoa)
-                  selecionarEntrada()
-                  cadastrarEntrada()
+                  cadastrarEntrada(r.idPessoa)
                 }}>
                   <IconCircleArrowUp />
                 </button>
                 <button className="bg-red-500 rounded-full" onClick={() => {
-                  setIdPessoa(r.idPessoa)
-                  selecionarSaida()
-                  cadastrarSaida()
+                  cadastrarSaida(r.idPessoa)
                 }}>
                   <IconCircleArrowDown />
                 </button>
               </td>
               <td className="border-t-0 px-3 align-middle border-l-0 border-r-0 text-sm p-4 text-center">
                 <button className="bg-green-500 rounded-full mr-1" onClick={() => {
-                  setIdPessoa(r.idPessoa)
-                  editarPessoa()
+                  ModalEditar(r.idPessoa)
                 }}>
                   <IconEdit />
                 </button>
                 <button className="bg-red-500 rounded-full" onClick={() => {
-                  setIdPessoa(r.idPessoa)
-                  deletarPessoa()
+                  deletarPessoa(r.idPessoa)
                 }}>
                   <IconTrash />
                 </button>
@@ -207,6 +222,40 @@ export default function CardTablePessoas() {
           ))}
         </tbody>
       </table>
+      <React.Fragment>
+        <Dialog
+          size="xs"
+          open={open}
+          handler={ModalEditar}
+          className="bg-transparent shadow-none"
+        >
+          <Card className="mx-auto w-full max-w-[24rem]">
+            <CardHeader
+              variant="gradient"
+              color="blue"
+              className="mb-4 grid p-5"
+            >
+              <Typography variant="h3" color="white">
+                Editar
+              </Typography>
+              <Typography variant="p" color="white">
+                Atualize as informações da pessoa
+              </Typography>
+            </CardHeader>
+            <CardBody className="flex flex-col gap-4">
+              <Input label="Nome" size="lg" value={nome} onChange={(e) => setNome(e.target.value)} />
+              <Input label="CPF" size="lg" value={cpf} onChange={(e) => setCpf(e.target.value)} />
+              <Input label="Telefone" size="lg" value={telefone} onChange={(e) => setTelefone(e.target.value)} />
+            </CardBody>
+            <CardFooter className="pt-0">
+              <Button variant="gradient" onClick={editarPessoa} fullWidth>
+                Concluir
+              </Button>
+            </CardFooter>
+          </Card>
+        </Dialog>
+      </React.Fragment>
     </div>
+
   )
 }

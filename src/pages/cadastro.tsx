@@ -116,8 +116,8 @@ export default function Cadastro() {
             </p>
             <div>
               <div className="flex gap-5 my-4">
-                <Input type="text" placeholder="Modelo" value={modelo} onChange={(e) => setModelo(e.target.value)} />
                 <Input type="text" placeholder="Marca" value={marca} onChange={(e) => setMarca(e.target.value)} />
+                <Input type="text" placeholder="Modelo" value={modelo} onChange={(e) => setModelo(e.target.value)} />
                 <Input type="text" placeholder="Placa" value={placa} onChange={(e) => setPlaca(e.target.value)} />
               </div>
               <div className="my-4 flex gap-4">
